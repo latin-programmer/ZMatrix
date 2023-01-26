@@ -147,15 +147,16 @@ static	const	unsigned int	paddingSize            = 4;
 // simply declares a forced breakpoint.
 // ---------------------------------------------------------------------------------------------------------------------------------
 
-#ifdef	WIN32
-	#ifdef	_DEBUG
-	#define	m_assert(x) if ((x) == false) __asm { int 3 }
-	#else
-	#define	m_assert(x) {}
-	#endif
-#else	// Linux uses assert, which we can use safely, since it doesn't bring up a dialog within the program.
-	#define	m_assert assert
-#endif
+#define	m_assert(x) {}
+//#ifdef	WIN32
+//	#ifdef	_DEBUG
+//	#define	m_assert(x) if ((x) == false) __asm { int 3 }
+//	#else
+//	#define	m_assert(x) {}
+//	#endif
+//#else	// Linux uses assert, which we can use safely, since it doesn't bring up a dialog within the program.
+//	#define	m_assert assert
+//#endif
 
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Here, we turn off our macros because any place in this source file where the word 'new' or the word 'delete' (etc.)

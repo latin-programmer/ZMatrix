@@ -55,7 +55,6 @@ HMENU gSysTrayPopup;
 HINSTANCE ghInstance;
 HWND ghWnd = NULL;
 HWND ghProgman = NULL;
-HWND WorkerW = NULL;
 HWND ghShellDLL = NULL;
 HWND ghSysListView = NULL;
 bool LiteStepMode = false;

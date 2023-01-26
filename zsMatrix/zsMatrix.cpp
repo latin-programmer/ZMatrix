@@ -116,27 +116,27 @@ if(this->MonotonousCleanupEnabled)\
 
 
 
-const unsigned int zsMatrix::DefaultInitialMaxStream = 1000;
+const unsigned int zsMatrix::DefaultInitialMaxStream = 200;
 const unsigned int zsMatrix::DefaultInitialSpeedVariance = 5;
 
-const bool zsMatrix::DefaultInitialMonotonousCleanupEnabled = false;
-const unsigned int zsMatrix::DefaultInitialBackTrace = 40;
+const bool zsMatrix::DefaultInitialMonotonousCleanupEnabled = true;
+const unsigned int zsMatrix::DefaultInitialBackTrace = 30;
 
-const bool zsMatrix::DefaultInitialRandomizedCleanupEnabled = false;
+const bool zsMatrix::DefaultInitialRandomizedCleanupEnabled = true;
 const unsigned int zsMatrix::DefaultInitialLeading = 10;
 const unsigned int zsMatrix::DefaultInitialSpacePad = 30;
 
-const BYTE zsMatrix::DefaultInitialColor[4] = {150,255,100,255};
+const BYTE zsMatrix::DefaultInitialColor[4] = { 150,255,100,255 };
 const BYTE zsMatrix::DefaultInitialFadeColor[4] = {50,85,33,128};
 const BYTE zsMatrix::DefaultInitialBGColor[4] = {0,0,0,0};
 
-const TBGMode zsMatrix::DefaultInitialBGMode = bgmodeBitmap;
+const TBGMode zsMatrix::DefaultInitialBGMode = bgmodeColor;
 
 const TBlendMode zsMatrix::DefaultInitialBlendMode = blendmodeXOR;
 
 const LOGFONT zsMatrix::DefaultInitialFont =
 {
-	12,
+	16,
 	0,
 	0,
 	0,
@@ -191,7 +191,7 @@ const basic_string<_TCHAR> zsMatrix::DefaultInitialValidSpecialStrings[] =
 	_T("The matrix has you"),
 };
 
-const float zsMatrix::DefaultInitialSpecialStringStreamProbability = 0.1f;
+const float zsMatrix::DefaultInitialSpecialStringStreamProbability = 0.0f;
 
 const double zsMatrix::DefaultInitialCoeffR1 = 1.0;
 const double zsMatrix::DefaultInitialCoeffR0 = 0.0;
