@@ -4,6 +4,6 @@
     <TargetFramework>net48</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>ZMatrixConfig</RootNamespace>
-    <AssemblyName>ZMatrixConfig</AssemblyName>
+    <AssemblyName>Config</AssemblyName>
   </PropertyGroup>
 </Project>

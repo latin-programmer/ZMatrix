@@ -1311,32 +1311,47 @@ void SetBlendScreenSaverWithBGOnly(bool NewVal)
 }
 //===========================================================================
 //===========================================================================
+static _tstring GetConfigExePath()
+{
+        _tstring Path = MatrixCommandLine;
+        size_t Pos = Path.find_last_of(_T("\/"));
+        if(Pos != _tstring::npos)
+        {
+                Path.erase(Pos + 1);
+                Path.append(_T("Config.exe"));
+        }
+        else
+        {
+                Path = _T("Config.exe");
+        }
+        return Path;
+}
+//==========================================================================
+//==========================================================================
 bool LaunchConfig(IzsMatrix *&ObjectToConfig)
 {
         bool RetVal = false;
-
         if(!AlreadyInConfig)
         {
                 AlreadyInConfig = true;
-
-                if(FileExists(_TEXT("Config.exe")))
+                _tstring ConfigExe = GetConfigExePath();
+                if(FileExists(ConfigExe.c_str()))
                 {
+                        _tstring TempCfg = AppConfigDirectoryPath;
+                        TempCfg.append(_T("\\default.cfg"));
                         SaveConfig(ObjectToConfig,RefreshTime);
-                        CopyFile(AppConfigFilePath.c_str(),_TEXT("default.cfg"),FALSE);
-
+                        CopyFile(AppConfigFilePath.c_str(),TempCfg.c_str(),FALSE);
                         STARTUPINFO si;
                         ZeroMemory(&si,sizeof(si));
                         si.cb = sizeof(si);
                         PROCESS_INFORMATION pi;
                         ZeroMemory(&pi,sizeof(pi));
-
-                        if(CreateProcess(_TEXT("Config.exe"),NULL,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))
+                        if(CreateProcess(ConfigExe.c_str(),NULL,NULL,NULL,FALSE,0,NULL,AppConfigDirectoryPath.c_str(),&si,&pi))
                         {
                                 WaitForSingleObject(pi.hProcess,INFINITE);
                                 CloseHandle(pi.hProcess);
                                 CloseHandle(pi.hThread);
-
-                                CopyFile(_TEXT("default.cfg"),AppConfigFilePath.c_str(),FALSE);
+                                CopyFile(TempCfg.c_str(),AppConfigFilePath.c_str(),FALSE);
                                 LoadConfig(ObjectToConfig,RefreshTime);
                                 RetVal = true;
                         }
@@ -1349,15 +1364,12 @@ bool LaunchConfig(IzsMatrix *&ObjectToConfig)
                 {
                         MB("Config.exe not found");
                 }
-
                 AlreadyInConfig = false;
         }
-
         if(RetVal)
         {
                 SaveConfig(ObjectToConfig,RefreshTime);
         }
-
         return RetVal;
 }
 //===========================================================================
@@ -1365,29 +1377,27 @@ bool LaunchConfig(IzsMatrix *&ObjectToConfig)
 bool LaunchScreenSaverConfig(IzsMatrix *&ObjectToConfig)
 {
         bool RetVal = false;
-
         if(!AlreadyInConfig)
         {
                 AlreadyInConfig = true;
-
-                if(FileExists(_TEXT("Config.exe")))
+                _tstring ConfigExe = GetConfigExePath();
+                if(FileExists(ConfigExe.c_str()))
                 {
+                        _tstring TempCfg = AppConfigDirectoryPath;
+                        TempCfg.append(_T("\\default.cfg"));
                         SaveConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
-                        CopyFile(AppScreenSaverConfigFilePath.c_str(),_TEXT("default.cfg"),FALSE);
-
+                        CopyFile(AppScreenSaverConfigFilePath.c_str(),TempCfg.c_str(),FALSE);
                         STARTUPINFO si;
                         ZeroMemory(&si,sizeof(si));
                         si.cb = sizeof(si);
                         PROCESS_INFORMATION pi;
                         ZeroMemory(&pi,sizeof(pi));
-
-                        if(CreateProcess(_TEXT("Config.exe"),NULL,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))
+                        if(CreateProcess(ConfigExe.c_str(),NULL,NULL,NULL,FALSE,0,NULL,AppConfigDirectoryPath.c_str(),&si,&pi))
                         {
                                 WaitForSingleObject(pi.hProcess,INFINITE);
                                 CloseHandle(pi.hProcess);
                                 CloseHandle(pi.hThread);
-
-                                CopyFile(_TEXT("default.cfg"),AppScreenSaverConfigFilePath.c_str(),FALSE);
+                                CopyFile(TempCfg.c_str(),AppScreenSaverConfigFilePath.c_str(),FALSE);
                                 LoadConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
                                 RetVal = true;
                         }
@@ -1400,15 +1410,12 @@ bool LaunchScreenSaverConfig(IzsMatrix *&ObjectToConfig)
                 {
                         MB("Config.exe not found");
                 }
-
                 AlreadyInConfig = false;
         }
-
         if(RetVal)
         {
                 SaveConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
         }
-
         return RetVal;
 }
 //===========================================================================
