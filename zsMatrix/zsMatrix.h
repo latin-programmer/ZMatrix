@@ -36,6 +36,7 @@
 
 #include <windows.h>
 #include <vector>
+#include <string>
 #include <tchar.h>
 #include "IzsMatrix.h"
 //#include "../globals.h"
