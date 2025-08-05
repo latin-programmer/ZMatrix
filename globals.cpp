@@ -1313,347 +1313,202 @@ void SetBlendScreenSaverWithBGOnly(bool NewVal)
 //===========================================================================
 bool LaunchConfig(IzsMatrix *&ObjectToConfig)
 {
-	bool RetVal = false;
+        bool RetVal = false;
 
-	if(!AlreadyInConfig)
-	{
-		AlreadyInConfig = true;
-		HINSTANCE hDLL = LoadLibrary(_TEXT("Config.dll"));
+        if(!AlreadyInConfig)
+        {
+                AlreadyInConfig = true;
 
-		if(hDLL == NULL)
-		{
-			MB("Failed to load Config.dll");
-			RetVal = false;
-		}
-		else
-		{
-			ConfigFormLauncher ConfigLauncher = (ConfigFormLauncher)GetProcAddress(hDLL,"LaunchConfigForm");
+                if(FileExists(_TEXT("Config.exe")))
+                {
+                        SaveConfig(ObjectToConfig,RefreshTime);
+                        CopyFile(AppConfigFilePath.c_str(),_TEXT("default.cfg"),FALSE);
 
-			if(ConfigLauncher == NULL)
-			{
-				MB("Failed to find LaunchConfigForm in Config.dll");
-				RetVal = false;
-			}
-			else
-			{
-				HRESULT Result = NO_ERROR;
-				MULTI_QI Qi;
-				Qi.pIID = &IID_IZSMATRIX;
-				Qi.pItf = NULL;
-				Qi.hr = 0;
+                        STARTUPINFO si;
+                        ZeroMemory(&si,sizeof(si));
+                        si.cb = sizeof(si);
+                        PROCESS_INFORMATION pi;
+                        ZeroMemory(&pi,sizeof(pi));
 
-				if(FAILED(Result = CoCreateInstanceEx(CLSID_ZSMATRIX,NULL,CLSCTX_ALL,NULL,1,&Qi) ) )
-				{
-					MB("Failed to create BackupObjectToConfig");
-					RetVal = false;
-				}
-				else
-				{
+                        if(CreateProcess(_TEXT("Config.exe"),NULL,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))
+                        {
+                                WaitForSingleObject(pi.hProcess,INFINITE);
+                                CloseHandle(pi.hProcess);
+                                CloseHandle(pi.hThread);
 
-					IzsMatrix *BackupObjectToConfig = (IzsMatrix *)Qi.pItf;
-					BackupObjectToConfig->CopyFrom(*ObjectToConfig);
+                                CopyFile(_TEXT("default.cfg"),AppConfigFilePath.c_str(),FALSE);
+                                LoadConfig(ObjectToConfig,RefreshTime);
+                                RetVal = true;
+                        }
+                        else
+                        {
+                                MB("Failed to launch Config.exe");
+                        }
+                }
+                else
+                {
+                        MB("Config.exe not found");
+                }
 
-					unsigned int BackupRefreshTime = RefreshTime;
-					DWORD Priority = GetPriorityClass(GetCurrentProcess());
-					DWORD BackupPriority = Priority;
+                AlreadyInConfig = false;
+        }
 
-					UINT PreviousPauseMenuItemState = EnableMenuItem(gSysTrayMenu,ID_PAUSE,MF_GRAYED);
-					bool PreviousPauseState = Paused;
-					if(Paused)
-					{
-						SetTimer(ghWnd,REFRESH_TIMER_ID,RefreshTime,0);
-						Paused = false;
-					}
+        if(RetVal)
+        {
+                SaveConfig(ObjectToConfig,RefreshTime);
+        }
 
-					int Temp = 0;
-					try
-					{
-						Temp = ConfigLauncher(ObjectToConfig,RefreshTime,Priority);
-					}
-					catch(...)
-					{
-						MB("Exception while in config dialog");
-						Temp = 0;
-					}
-
-					if(0 == Temp)
-					{
-						//This scenario arises if the program is closed while the config form is open
-						if(ObjectToConfig == NULL)
-						{
-							PostQuitMessage(0);
-							RetVal = false;
-						}
-						else
-						{
-							ObjectToConfig->CopyFrom(*BackupObjectToConfig);
-							RefreshTime = BackupRefreshTime;
-							Priority = BackupPriority;
-							RetVal = false;
-						}
-					}
-					else
-					{
-						RetVal = true;
-					}
-
-					if(PreviousPauseState)
-					{
-						KillTimer(ghWnd,REFRESH_TIMER_ID);
-						Paused = true;
-					}
-					else
-					{
-						SetTimer(ghWnd,REFRESH_TIMER_ID,RefreshTime,0);
-					}
-
-					EnableMenuItem(gSysTrayMenu,ID_PAUSE,PreviousPauseMenuItemState);
-
-					SetPriorityClass(GetCurrentProcess(),Priority);
-
-					BackupObjectToConfig->Release();
-				}
-				//ConfigLauncher(Temp);
-			}
-
-			FreeLibrary(hDLL);
-		}
-		AlreadyInConfig = false;
-	}
-
-	if(RetVal)
-	{
-		SaveConfig(ObjectToConfig,RefreshTime);
-	}
-
-	return RetVal;
+        return RetVal;
 }
 //===========================================================================
 //===========================================================================
 bool LaunchScreenSaverConfig(IzsMatrix *&ObjectToConfig)
 {
-	bool RetVal = false;
+        bool RetVal = false;
 
-	if(!AlreadyInConfig)
-	{
-		AlreadyInConfig = true;
-		HINSTANCE hDLL = LoadLibrary(_TEXT("Config.dll"));
+        if(!AlreadyInConfig)
+        {
+                AlreadyInConfig = true;
 
-		if(hDLL == NULL)
-		{
-			MB("Failed to load Config.dll");
-			RetVal = false;
-		}
-		else
-		{
-			ConfigFormLauncher ConfigLauncher = (ConfigFormLauncher)GetProcAddress(hDLL,"LaunchConfigForm");
+                if(FileExists(_TEXT("Config.exe")))
+                {
+                        SaveConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
+                        CopyFile(AppScreenSaverConfigFilePath.c_str(),_TEXT("default.cfg"),FALSE);
 
-			if(ConfigLauncher == NULL)
-			{
-				MB("Failed to find LaunchConfigForm in Config.dll");
-				RetVal = false;
-			}
-			else
-			{
-				HRESULT Result = NO_ERROR;
-				MULTI_QI Qi;
-				Qi.pIID = &IID_IZSMATRIX;
-				Qi.pItf = NULL;
-				Qi.hr = 0;
+                        STARTUPINFO si;
+                        ZeroMemory(&si,sizeof(si));
+                        si.cb = sizeof(si);
+                        PROCESS_INFORMATION pi;
+                        ZeroMemory(&pi,sizeof(pi));
 
-				if(FAILED(Result = CoCreateInstanceEx(CLSID_ZSMATRIX,NULL,CLSCTX_ALL,NULL,1,&Qi) ) )
-				{
-					MB("Failed to create BackupObjectToConfig");
-					RetVal = false;
-				}
-				else
-				{
+                        if(CreateProcess(_TEXT("Config.exe"),NULL,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))
+                        {
+                                WaitForSingleObject(pi.hProcess,INFINITE);
+                                CloseHandle(pi.hProcess);
+                                CloseHandle(pi.hThread);
 
-					IzsMatrix *BackupObjectToConfig = (IzsMatrix *)Qi.pItf;
-					BackupObjectToConfig->CopyFrom(*ObjectToConfig);
+                                CopyFile(_TEXT("default.cfg"),AppScreenSaverConfigFilePath.c_str(),FALSE);
+                                LoadConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
+                                RetVal = true;
+                        }
+                        else
+                        {
+                                MB("Failed to launch Config.exe");
+                        }
+                }
+                else
+                {
+                        MB("Config.exe not found");
+                }
 
-					unsigned int BackupRefreshTime = RefreshTime;
-					DWORD BackupPriority = GetPriorityClass(GetCurrentProcess());
+                AlreadyInConfig = false;
+        }
 
-					bool CreatedFile = false;
-					if(!FileExists(AppScreenSaverConfigFilePath.c_str()))
-					{
-						CopyFile(AppConfigFilePath.c_str(),AppScreenSaverConfigFilePath.c_str(),TRUE);
-						CreatedFile = true;
-					}
+        if(RetVal)
+        {
+                SaveConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
+        }
 
-					UINT PreviousPauseMenuItemState = EnableMenuItem(gSysTrayMenu,ID_PAUSE,MF_GRAYED);
-					bool PreviousPauseState = Paused;
-					Paused = false;
-
-					LoadConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
-					SetTimer(ghWnd,REFRESH_TIMER_ID,RefreshTime,0);
-					DWORD Priority = GetPriorityClass(GetCurrentProcess());
-
-					int Temp = 0;
-					try
-					{
-						Temp = ConfigLauncher(ObjectToConfig,RefreshTime,Priority);
-					}
-					catch(...)
-					{
-						MB("Exception while in config dialog");
-						Temp = 0;
-					}
-
-					if(0 == Temp)
-					{
-						//This scenario arises if the program is closed while the config form is open
-						if(ObjectToConfig == NULL)
-						{
-							PostQuitMessage(0);
-							RetVal = false;
-						}
-						else
-						{
-							ObjectToConfig->CopyFrom(*BackupObjectToConfig);
-							RefreshTime = BackupRefreshTime;
-
-							if(CreatedFile)
-							{
-								DeleteFile(AppScreenSaverConfigFilePath.c_str());
-							}
-
-							RetVal = false;
-						}
-					}
-					else
-					{
-						SaveConfig(ObjectToConfig,RefreshTime,AppScreenSaverConfigFilePath.c_str());
-
-						ObjectToConfig->CopyFrom(*BackupObjectToConfig);
-						RefreshTime = BackupRefreshTime;
-						RetVal = true;
-					}
-
-					if(PreviousPauseState)
-					{
-						KillTimer(ghWnd,REFRESH_TIMER_ID);
-						Paused = true;
-					}
-					else
-					{
-						SetTimer(ghWnd,REFRESH_TIMER_ID,RefreshTime,0);
-					}
-
-					EnableMenuItem(gSysTrayMenu,ID_PAUSE,PreviousPauseMenuItemState);
-
-					SetPriorityClass(GetCurrentProcess(),BackupPriority);
-
-					BackupObjectToConfig->Release();
-				}
-				//ConfigLauncher(Temp);
-			}
-
-			FreeLibrary(hDLL);
-		}
-		AlreadyInConfig = false;
-	}
-
-
-	return RetVal;
+        return RetVal;
 }
 //===========================================================================
 //===========================================================================
 bool SaveConfig(IzsMatrix *Matrix,unsigned int RefreshTime,const _TCHAR *ConfigFile)
 {
-	bool RetVal = false;
+        if(Matrix == NULL)
+                return false;
 
-	if(Matrix == NULL)
-		return false;
-	
-	if(ConfigFile == NULL)
-	{
-		ConfigFile = AppConfigFilePath.c_str();
-	}
+        if(ConfigFile == NULL)
+        {
+                ConfigFile = AppConfigFilePath.c_str();
+        }
 
-	//Save the configuration to file using the method provided in config.dll
-	HINSTANCE hDLL = LoadLibrary(_TEXT("Config.dll"));
+        TCHAR buf[64];
+        _stprintf(buf,_T("%u"),Matrix->GetMaxStream());
+        WritePrivateProfileString(_T("General"),_T("MaxStream"),buf,ConfigFile);
 
-	if(hDLL != NULL)
-	{
-		ConfigSaver Saver = (ConfigSaver)GetProcAddress(hDLL,"SaveConfigToFile");
+        _stprintf(buf,_T("%u"),Matrix->GetSpeedVariance());
+        WritePrivateProfileString(_T("General"),_T("SpeedVariance"),buf,ConfigFile);
 
-		if(Saver != NULL)
-		{
-			try
-			{
-				RetVal = (0 != Saver(Matrix,RefreshTime,GetPriorityClass(GetCurrentProcess()),(_TCHAR *)ConfigFile));
-			}
-			catch(...)
-			{
-				RetVal = false;
-				MB("Exception while saving config file");
-			}
+        WritePrivateProfileString(_T("General"),_T("MonotonousCleanupEnabled"),
+                Matrix->GetMonotonousCleanupEnabled() ? _T("1") : _T("0"),ConfigFile);
 
-			//Saver(MatrixObject,_TEXT("ZMatrix.cfg"));
-		}
+        _stprintf(buf,_T("%u"),Matrix->GetBackTrace());
+        WritePrivateProfileString(_T("General"),_T("BackTrace"),buf,ConfigFile);
 
-		FreeLibrary(hDLL);
-	}
+        WritePrivateProfileString(_T("General"),_T("RandomizedCleanupEnabled"),
+                Matrix->GetRandomizedCleanupEnabled() ? _T("1") : _T("0"),ConfigFile);
 
-	return RetVal;
+        _stprintf(buf,_T("%u"),Matrix->GetLeading());
+        WritePrivateProfileString(_T("General"),_T("Leading"),buf,ConfigFile);
+
+        _stprintf(buf,_T("%u"),Matrix->GetSpacePad());
+        WritePrivateProfileString(_T("General"),_T("SpacePad"),buf,ConfigFile);
+
+        _stprintf(buf,_T("%u"),RefreshTime);
+        WritePrivateProfileString(_T("General"),_T("RefreshTime"),buf,ConfigFile);
+
+        DWORD Priority = GetPriorityClass(GetCurrentProcess());
+        const _TCHAR *prio = _T("IDLE_PRIORITY_CLASS");
+        switch(Priority)
+        {
+                case IDLE_PRIORITY_CLASS: prio = _T("IDLE_PRIORITY_CLASS"); break;
+                case BELOW_NORMAL_PRIORITY_CLASS: prio = _T("BELOW_NORMAL_PRIORITY_CLASS"); break;
+                case NORMAL_PRIORITY_CLASS: prio = _T("NORMAL_PRIORITY_CLASS"); break;
+                case ABOVE_NORMAL_PRIORITY_CLASS: prio = _T("ABOVE_NORMAL_PRIORITY_CLASS"); break;
+                case HIGH_PRIORITY_CLASS: prio = _T("HIGH_PRIORITY_CLASS"); break;
+                case REALTIME_PRIORITY_CLASS: prio = _T("REALTIME_PRIORITY_CLASS"); break;
+        }
+        WritePrivateProfileString(_T("General"),_T("PriorityClass"),prio,ConfigFile);
+
+        _stprintf(buf,_T("%f"),Matrix->GetSpecialStringStreamProbability());
+        WritePrivateProfileString(_T("General"),_T("SpecialStringStreamProbability"),buf,ConfigFile);
+
+        return true;
 }
 //===========================================================================
 //===========================================================================
 bool LoadConfig(IzsMatrix *Matrix,unsigned int &RefreshTime,const _TCHAR *ConfigFile)
 {
-	bool RetVal = false;
+        if(Matrix == NULL)
+                return false;
 
-	if(Matrix == NULL)
-		return false;
-	
-	if(ConfigFile == NULL)
-	{
-		ConfigFile = AppConfigFilePath.c_str();
-	}
+        if(ConfigFile == NULL)
+        {
+                ConfigFile = AppConfigFilePath.c_str();
+        }
 
-	//Load the configuration from file using the method provided in config.dll
-	HINSTANCE hDLL = LoadLibrary(_TEXT("Config.dll"));
-	DWORD PriorityClass = IDLE_PRIORITY_CLASS;
+        if(!FileExists(ConfigFile))
+        {
+                CopyFile(_TEXT("default.cfg"),(_TCHAR *)ConfigFile,FALSE);
+        }
 
-	if(hDLL != NULL)
-	{
-		ConfigLoader Loader = (ConfigLoader)GetProcAddress(hDLL,"LoadConfigFromFile");
+        Matrix->SetMaxStream(GetPrivateProfileInt(_T("General"),_T("MaxStream"),Matrix->GetMaxStream(),ConfigFile));
+        Matrix->SetSpeedVariance(GetPrivateProfileInt(_T("General"),_T("SpeedVariance"),Matrix->GetSpeedVariance(),ConfigFile));
+        Matrix->SetMonotonousCleanupEnabled(GetPrivateProfileInt(_T("General"),_T("MonotonousCleanupEnabled"),Matrix->GetMonotonousCleanupEnabled()?1:0,ConfigFile) != 0);
+        Matrix->SetBackTrace(GetPrivateProfileInt(_T("General"),_T("BackTrace"),Matrix->GetBackTrace(),ConfigFile));
+        Matrix->SetRandomizedCleanupEnabled(GetPrivateProfileInt(_T("General"),_T("RandomizedCleanupEnabled"),Matrix->GetRandomizedCleanupEnabled()?1:0,ConfigFile) != 0);
+        Matrix->SetLeading(GetPrivateProfileInt(_T("General"),_T("Leading"),Matrix->GetLeading(),ConfigFile));
+        Matrix->SetSpacePad(GetPrivateProfileInt(_T("General"),_T("SpacePad"),Matrix->GetSpacePad(),ConfigFile));
+        RefreshTime = GetPrivateProfileInt(_T("General"),_T("RefreshTime"),RefreshTime,ConfigFile);
 
-		if(Loader != NULL)
-		{
+        TCHAR buf[64];
+        GetPrivateProfileString(_T("General"),_T("PriorityClass"),_T("IDLE_PRIORITY_CLASS"),buf,64,ConfigFile);
+        DWORD Priority = IDLE_PRIORITY_CLASS;
+        if(!_tcscmp(buf,_T("BELOW_NORMAL_PRIORITY_CLASS"))) Priority = BELOW_NORMAL_PRIORITY_CLASS;
+        else if(!_tcscmp(buf,_T("NORMAL_PRIORITY_CLASS"))) Priority = NORMAL_PRIORITY_CLASS;
+        else if(!_tcscmp(buf,_T("ABOVE_NORMAL_PRIORITY_CLASS"))) Priority = ABOVE_NORMAL_PRIORITY_CLASS;
+        else if(!_tcscmp(buf,_T("HIGH_PRIORITY_CLASS"))) Priority = HIGH_PRIORITY_CLASS;
+        else if(!_tcscmp(buf,_T("REALTIME_PRIORITY_CLASS"))) Priority = REALTIME_PRIORITY_CLASS;
+        SetPriorityClass(GetCurrentProcess(),Priority);
 
-				try
-				{
-					if(!FileExists(ConfigFile))
-					{
-						CopyFile(_TEXT("default.cfg"),(_TCHAR *)ConfigFile,FALSE);
-					}
+        GetPrivateProfileString(_T("General"),_T("SpecialStringStreamProbability"),_T("0"),buf,64,ConfigFile);
+        Matrix->SetSpecialStringStreamProbability((float)_tstof(buf));
 
+        SetTimer(ghWnd,REFRESH_TIMER_ID,RefreshTime,NULL);
+        Paused = false;
 
-					RetVal = (0 != Loader(Matrix,RefreshTime,PriorityClass,(_TCHAR *)ConfigFile));
-				}
-				catch(...)
-				{
-					MB("Exception while loading config file");
-					RetVal = 0;
-				}
-
-
-
-
-		}
-
-		FreeLibrary(hDLL);
-	}
-
-	SetPriorityClass(GetCurrentProcess(),PriorityClass);
-	SetTimer(ghWnd,REFRESH_TIMER_ID,RefreshTime,NULL);
-
-	Paused = false;
-
-	return RetVal;
+        return true;
 }
 //===========================================================================
 //===========================================================================

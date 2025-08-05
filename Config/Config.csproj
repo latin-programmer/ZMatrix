@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>ZMatrixConfig</RootNamespace>
+    <AssemblyName>ZMatrixConfig</AssemblyName>
+  </PropertyGroup>
+</Project>
