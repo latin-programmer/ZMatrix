@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "matrix", "matrix.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsMatrix", "zsMatrix\zsMatrix.vcxproj", "{4B124C2F-562D-4369-8A2F-0B8378030626}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZMatrixConfig", "Config\Config.csproj", "{0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -51,7 +53,15 @@ Global
 		{4B124C2F-562D-4369-8A2F-0B8378030626}.Release|x86.Build.0 = Release|Win32
 		{4B124C2F-562D-4369-8A2F-0B8378030626}.Template|x86.ActiveCfg = Template|Win32
 		{4B124C2F-562D-4369-8A2F-0B8378030626}.Template|x86.Build.0 = Template|Win32
-	EndGlobalSection
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Debug|x86.Build.0 = Debug|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Release Win9x|x86.ActiveCfg = Release|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Release Win9x|x86.Build.0 = Release|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Release|x86.ActiveCfg = Release|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Release|x86.Build.0 = Release|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Template|x86.ActiveCfg = Release|Any CPU
+                {0D73EB0B-E6CC-4B1C-AE34-BD8C775120E8}.Template|x86.Build.0 = Release|Any CPU
+        EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

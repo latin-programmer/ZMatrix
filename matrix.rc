@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include <windows.h>
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -32,7 +32,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include <windows.h>\r\n"
     "\0"
 END
 
@@ -117,7 +117,7 @@ BEGIN
             VALUE "FileDescription", "matrix"
             VALUE "FileVersion", "1.5.4.0"
             VALUE "InternalName", "matrix"
-            VALUE "LegalCopyright", "Copyright © 2003"
+            VALUE "LegalCopyright", "Copyright Â© 2003"
             VALUE "OriginalFilename", "matrix.exe"
             VALUE "ProductName", "ZMatrix"
             VALUE "ProductVersion", "1.5.4.0"

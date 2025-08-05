@@ -187,9 +187,6 @@ void SetBlendScreenSaverWithBGOnly(bool NewVal);
 
 typedef int (__stdcall *AboutFormLauncher)(void *Parent);
 typedef int (__stdcall *HireFormLauncher)(void *Parent);
-typedef int (__stdcall *ConfigFormLauncher)(IzsMatrix *Matrix,unsigned int &RefreshTime,DWORD &Priority);
-typedef int (__stdcall *ConfigSaver)(IzsMatrix *Matrix,unsigned int RefreshTime,DWORD Priority,_TCHAR *FileName);
-typedef int (__stdcall *ConfigLoader)(IzsMatrix *Matrix,unsigned int &RefreshTime,DWORD &Priority,_TCHAR *FileName);
 
 
 void MinimizeAll(void);
